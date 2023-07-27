@@ -26,7 +26,7 @@ func NewIconService() *IconService {
 func (s IconService) Generate(letter string, size int) ([]byte, error) {
 	// pngの文字アイコンの生成
 
-	// colorの生成
+	// letterからcolorの生成
 	_a := sha1.Sum([]byte(letter))
 	hash := _a[:sha1.Size]
 	rgba := color.RGBA{hash[0], hash[1], hash[2], 0xff}
@@ -74,10 +74,13 @@ func (s IconService) Generate(letter string, size int) ([]byte, error) {
 		Src:  image.White,
 		Face: face,
 	}
-	dr.Dot.X = (fixed.I(size) - dr.MeasureString(letter)) / 2
+
+	// 頭文字からアイコンを作成する
+	firstLetter := string([]rune(letter)[0])
+	dr.Dot.X = (fixed.I(size) - dr.MeasureString(firstLetter)) / 2
 	dr.Dot.Y = (fixed.I(size)+fixed.I(size/2))/2 - fixed.I(4)
 
-	dr.DrawString(letter)
+	dr.DrawString(firstLetter)
 
 	// 出力
 	// file, err := os.Create("icon.png")
